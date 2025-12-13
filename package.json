@@ -5,7 +5,7 @@
   "type": "module",
   "main": "dist/index.js",
   "bin": {
-    "freshrss-mcp": "bin/cli.js"
+    "freshrss-mcp-server": "bin/cli.js"
   },
   "files": [
     "bin",
