@@ -1,4 +1,6 @@
+#!/usr/bin/env node
 import 'dotenv/config';
+import { createRequire } from 'module';
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
 import { FreshRSSClient } from './api/index.js';
@@ -11,13 +13,16 @@ import {
 } from './handlers/index.js';
 import { getConfigFromEnv } from './utils/config.js';
 
+const require = createRequire(import.meta.url);
+const { version } = require('../package.json') as { version: string };
+
 /**
  * Create and configure the MCP server
  */
 function createServer(): McpServer {
   const server = new McpServer({
     name: 'freshrss-mcp',
-    version: '1.0.0',
+    version,
   });
 
   return server;

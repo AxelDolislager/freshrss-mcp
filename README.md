@@ -25,20 +25,38 @@ npm install -g @equaldepth/freshrss-mcp-server
 
 ## Usage
 
-Example `claude_desktop_config.json`:
+### Claude Desktop
 
 ```json
 {
   "mcpServers": {
     "freshrss": {
-      "command": "freshrss-mcp",
-      "args": [],
+      "command": "npx",
+      "args": ["@equaldepth/freshrss-mcp-server"],
       "env": {
         "FRESHRSS_URL": "https://your-freshrss-instance.com",
         "FRESHRSS_USERNAME": "your-username",
         "FRESHRSS_API_PASSWORD": "your-api-password"
       }
     }
+  }
+}
+```
+
+### GitHub Copilot
+
+```json
+{
+  "servers": {
+    "freshrss": {
+      "command": "npx",
+      "args": ["@equaldepth/freshrss-mcp-server"],
+      "env": {
+        "FRESHRSS_URL": "https://your-freshrss-instance.com",
+        "FRESHRSS_USERNAME": "your-username",
+        "FRESHRSS_API_PASSWORD": "your-api-password"
+      }
+    },
   }
 }
 ```
