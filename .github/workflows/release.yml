@@ -1,0 +1,71 @@
+name: Release
+
+on:
+  release:
+    types: [published]
+
+permissions:
+  contents: write
+  id-token: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20.x
+          registry-url: https://registry.npmjs.org
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      - name: Unit tests
+        run: npm run test:unit
+
+      - name: Build
+        run: npm run build
+
+      - name: Ensure tag matches package.json version
+        run: |
+          node - <<'NODE'
+          import pkg from './package.json' assert { type: 'json' };
+          const tag = process.env.GITHUB_REF_NAME?.replace(/^v/, '');
+          if (!tag) {
+            console.error('Missing tag name');
+            process.exit(1);
+          }
+          if (pkg.version !== tag) {
+            console.error(`Tag ${tag} does not match package.json version ${pkg.version}`);
+            process.exit(1);
+          }
+          console.log(`Version OK: ${tag}`);
+          NODE
+
+      - name: Pack artifact
+        id: pack
+        run: |
+          file=$(npm pack --silent)
+          echo "file=$file" >> "$GITHUB_OUTPUT"
+
+      - name: Publish to npm
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: npm publish --provenance --access public
+
+      - name: Upload Release Assets
+        uses: softprops/action-gh-release@v2
+        with:
+          files: ${{ steps.pack.outputs.file }}

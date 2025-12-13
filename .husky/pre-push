@@ -1,0 +1,2 @@
+# Keep pushes honest: catch TS issues before CI.
+npm run typecheck
