@@ -64,7 +64,12 @@ jobs:
           echo "file=$file" >> "$GITHUB_OUTPUT"
 
       - name: Publish to npm
-        run: npm publish --provenance --access public
+        run: |
+          if [[ "${{ github.event.release.prerelease }}" == "true" ]]; then
+            npm publish --provenance --access public --tag beta
+          else
+            npm publish --provenance --access public
+          fi
 
       - name: Upload Release Assets
         uses: softprops/action-gh-release@v2
